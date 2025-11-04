@@ -21,20 +21,42 @@ jobs:
       - name: Install build dependencies
         run: sudo apt-get update && sudo apt-get install -y ninja-build cmake pkg-config python3
 
-      - name: Prepare Externals
+            - name: Prepare Externals
         run: |
           mkdir -p Externals
-          # Fix Zstd (avoid existing dir issues)
-          if [ -d Externals/zstd/.git ]; then
-            echo "Zstd already cloned, skipping..."
-          else
-            rm -rf Externals/zstd
+
+          # Zstd (compression)
+          if [ ! -d Externals/zstd ]; then
             git clone --depth=1 https://github.com/facebook/zstd.git Externals/zstd
           fi
-          # Add LZ4 (fix missing lz4.h)
+
+          # LZ4 (compression)
           if [ ! -d Externals/lz4 ]; then
             git clone --depth=1 https://github.com/lz4/lz4.git Externals/lz4
           fi
+
+          # zlib-ng (core compression)
+          if [ ! -d Externals/zlib-ng ]; then
+            git clone --depth=1 https://github.com/zlib-ng/zlib-ng.git Externals/zlib-ng
+          fi
+
+          # libspng (PNG support)
+          if [ ! -d Externals/libspng ]; then
+            git clone --depth=1 https://github.com/randy408/libspng.git Externals/libspng
+          fi
+
+          # curl (network)
+          if [ ! -d Externals/curl ]; then
+            git clone --depth=1 https://github.com/curl/curl.git Externals/curl
+          fi
+
+          # mbedtls (crypto)
+          if [ ! -d Externals/mbedtls ]; then
+            git clone --depth=1 https://github.com/Mbed-TLS/mbedtls.git Externals/mbedtls
+          fi
+
+          echo "✅ Externals prepared."
+
 
       - name: Configure build
         run: |
