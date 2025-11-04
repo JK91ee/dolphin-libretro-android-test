@@ -19,11 +19,15 @@ jobs:
         run: |
           git submodule update --init --recursive
           if [ ! -f Externals/zstd/lib/zstd.h ]; then
-            echo "⚠️ Zstd submodule missing — fetching manually..."
-            mkdir -p Externals/zstd
-            git clone --depth=1 https://github.com/facebook/zstd.git Externals/zstd
+            echo "⚠️ Zstd submodule missing or incomplete — fixing..."
+            if [ -d Externals/zstd ] && [ "$(ls -A Externals/zstd)" ]; then
+              echo "ℹ️ Zstd folder exists, skipping clone."
+            else
+              rm -rf Externals/zstd
+              git clone --depth=1 https://github.com/facebook/zstd.git Externals/zstd
+            fi
           fi
-          ls Externals/zstd/lib || echo "⚠️ Zstd folder still missing"
+          ls Externals/zstd/lib || echo "⚠️ Zstd folder still missing after fix!"
 
       - name: Set up Android NDK
         uses: nttld/setup-ndk@v1
