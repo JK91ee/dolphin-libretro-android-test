@@ -21,7 +21,11 @@ jobs:
           ndk-version: r26d
 
       - name: Install build tools
-        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build python3
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build python3 libzstd-dev
+
+      - name: Ensure all submodules are installed
+        run: git submodule update --init --recursive
+  
 
       - name: Configure build
         run: |
